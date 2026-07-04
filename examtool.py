@@ -27,7 +27,8 @@ def formato_incidentes(df):
     df['data_compromised_records'] = df['data_compromised_records'] / 1000
     with open('sectores.json', 'r', encoding='utf-8') as f:
         sectores = json.load(f)
-        df['industry_primary'] = df['industry_primary'].map(sectores)
+        sectores_int = {int(k): v for k, v in sectores.items()}
+        df['industry_primary'] = df['industry_primary'].map(sectores_int)
     df['attack_vector_primary'] = df['attack_vector_primary'].str.capitalize()
     df = df[['industry_primary','attack_vector_primary','downtime_hours','data_compromised_records']]
     df.columns = ['Sector', 'Ataque', 'Tiempo_Contencion (Hrs)', 'Registros_Comprometidos (Miles)']
@@ -37,15 +38,6 @@ def combinar(df1, df2):
     df_lista = [df1, df2]
     df_combinado = pd.concat(df_lista, ignore_index=True)
     return df_combinado
-
-def dataset_encode(df):
-    with open('codigos_s.json', 'r', encoding='utf-8') as f:
-        codigos = json.load(f)
-        df['Sector'] = df['Sector'].map(codigos)
-    with open('codigos_t.json', 'r', encoding='utf-8') as f:
-        codigos = json.load(f)
-        df['Ataque'] = df['Ataque'].map(codigos)
-    return df
 
 anexob = quitar_id(anexob)
 incidentes_nuevos = formato_incidentes(incidentes_nuevos)
