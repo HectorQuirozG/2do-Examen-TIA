@@ -2,7 +2,7 @@ import pandas as pd
 import json
 
 anexob = pd.read_csv("AnexoB.csv")
-incidentes_nuevos = pd.read_csv("incidents_master-selected-columns.csv")
+incidentes_nuevos = pd.read_csv("Global_Cybersecurity_Threats_2015-2024-selected-columns.csv")
 
 quitar_id = lambda df: df.drop('ID', axis=1)
 
@@ -24,13 +24,9 @@ def limpiar(df):
     return df_resultado
 
 def formato_incidentes(df):
-    df['data_compromised_records'] = df['data_compromised_records'] / 1000
-    with open('sectores.json', 'r', encoding='utf-8') as f:
-        sectores = json.load(f)
-        sectores_int = {int(k): v for k, v in sectores.items()}
-        df['industry_primary'] = df['industry_primary'].map(sectores_int)
-    df['attack_vector_primary'] = df['attack_vector_primary'].str.capitalize()
-    df = df[['industry_primary','attack_vector_primary','downtime_hours','data_compromised_records']]
+    df['Number of Affected Users'] = df['Number of Affected Users'] / 1000
+    traduccion = {'Healthcare': 'Salud', 'Banking': 'Financiero'}
+    df['Target Industry'] = df['Target Industry'].map(traduccion)
     df.columns = ['Sector', 'Ataque', 'Tiempo_Contencion (Hrs)', 'Registros_Comprometidos (Miles)']
     return df
     
@@ -40,7 +36,7 @@ def combinar(df1, df2):
     return df_combinado
 
 anexob = quitar_id(anexob)
-incidentes_nuevos = formato_incidentes(incidentes_nuevos)
+incidentes_nuevos1 = formato_incidentes(incidentes_nuevos)
 
 df_combinado = combinar(anexob, incidentes_nuevos)
 df_combinado.to_csv('dataset_raw.csv', index=False)
