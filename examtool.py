@@ -36,7 +36,7 @@ def combinar(df1, df2):
     return df_combinado
 
 anexob = quitar_id(anexob)
-incidentes_nuevos1 = formato_incidentes(incidentes_nuevos)
+incidentes_nuevos = formato_incidentes(incidentes_nuevos)
 
 df_combinado = combinar(anexob, incidentes_nuevos)
 df_combinado.to_csv('dataset_raw.csv', index=False)
